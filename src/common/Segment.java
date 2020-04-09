@@ -1,7 +1,6 @@
 package common;
 
-import java.awt.Graphics;
-import java.awt.Point;
+import java.awt.*;
 
 /**
  * A common.Segment is the most interesting class making up our graph, and represents
@@ -37,10 +36,14 @@ public class Segment {
 		this.end.addSegment(this);
 	}
 
-	public void draw(Graphics g, Location origin, double scale) {
+	public void draw(Graphics g, Dimension area, Location origin, double scale) {
 		for (int i = 1; i < points.length; i++) {
 			Point p = points[i - 1].asPoint(origin, scale);
+			p.translate(area.width / 2, area.height / 2);
+
 			Point q = points[i].asPoint(origin, scale);
+			q.translate(area.width / 2, area.height / 2);
+
 			g.drawLine(p.x, p.y, q.x, q.y);
 		}
 	}

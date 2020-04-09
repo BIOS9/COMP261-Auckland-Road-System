@@ -47,14 +47,14 @@ public class Graph {
 		// draw all the segments.
 		g2.setColor(Mapper.SEGMENT_COLOUR);
 		for (Segment s : segments)
-			s.draw(g2, origin, scale);
+			s.draw(g2, screen, origin, scale);
 
 		// draw the segments of all highlighted roads.
 		g2.setColor(Mapper.HIGHLIGHT_COLOUR);
 		g2.setStroke(new BasicStroke(3));
 		for (Road road : highlightedRoads) {
 			for (Segment seg : road.components) {
-				seg.draw(g2, origin, scale);
+				seg.draw(g2, screen, origin, scale);
 			}
 		}
 

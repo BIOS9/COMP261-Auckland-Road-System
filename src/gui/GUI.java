@@ -81,6 +81,34 @@ public abstract class GUI {
 	protected abstract void onMove(Move m);
 
 	/**
+	 * Is called whenever the mouse wheel is scrolled. This can be used for
+	 * zooming the map.
+	 */
+	protected abstract void onMouseWheelMove(MouseWheelEvent e);
+
+	/**
+	 * Is called whenever the mouse is dragged on the drawing area.
+	 */
+	protected abstract void onMouseDragged(double draggedX, double draggedY);
+
+	/**
+	 * Is called whenever the mouse is moved on the drawing area.
+	 * @param x Cursor X
+	 * @param y Cursor Y
+	 */
+	protected abstract void onMouseMoved(double x, double y);
+
+	/**
+	 * Is called whenever the mouse starts dragging.
+	 */
+	protected abstract void onMouseDragStart();
+
+	/**
+	 * Is called whenever the mouse stops dragging.
+	 */
+	protected abstract void onMouseDragStop();
+
+	/**
 	 * Is called when the user has successfully selected a directory to load the
 	 * data files from. File objects representing the four files of interested
 	 * are passed to the method. The fourth File, polygons, might be null if it
@@ -168,6 +196,8 @@ public abstract class GUI {
 
 	private JTextField search;
 	private JFileChooser fileChooser;
+
+	private double mouseDownX, mouseDownY;
 
 	public GUI() {
 		initialise();
@@ -381,13 +411,39 @@ public abstract class GUI {
 
 		drawing.addMouseListener(new MouseAdapter() {
 			public void mouseReleased(MouseEvent e) {
+				onMouseDragStop();
+				redraw();
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
 				onClick(e);
 				redraw();
+			}
+
+			public void mousePressed(MouseEvent mouseEvent) {
+				onMouseDragStart();
+				mouseDownX = mouseEvent.getX();
+				mouseDownY = mouseEvent.getY();
 			}
 		});
 
 		drawing.addMouseWheelListener(new MouseAdapter() {
 			public void mouseWheelMoved(MouseWheelEvent e) {
+				onMouseWheelMove(e);
+				redraw();
+			}
+		});
+
+		drawing.addMouseMotionListener(new MouseAdapter() {
+			public void mouseDragged(MouseEvent mouseEvent) {
+				onMouseDragged(mouseEvent.getX() - mouseDownX, mouseEvent.getY() - mouseDownY);
+				redraw();
+			}
+
+			public void mouseMoved(MouseEvent e) {
+				onMouseMoved(e.getX(), e.getY());
+				redraw();
 			}
 		});
 

@@ -34,6 +34,7 @@ public class Node {
 
 	public void draw(Graphics g, Dimension area, Location origin, double scale) {
 		Point p = location.asPoint(origin, scale);
+		p.translate(area.width / 2, area.height / 2);
 
 		// for efficiency, don't render nodes that are off-screen.
 		if (p.x < 0 || p.x > area.width || p.y < 0 || p.y > area.height)

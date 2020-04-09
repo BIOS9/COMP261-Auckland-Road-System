@@ -5,13 +5,11 @@ import common.Location;
 import common.Node;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.io.File;
-import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * This is the main class for the mapping program. It extends the GUI abstract
@@ -31,20 +29,21 @@ public class Mapper extends GUI {
 	public static final int NODE_INTERCEPT = 1;
 	public static final double NODE_GRADIENT = 0.8;
 
-	// defines how much you move per button press, and is dependent on scale.
-	public static final double MOVE_AMOUNT = 100;
-	// defines how much you zoom in/out per button press, and the maximum and
-	// minimum zoom levels.
-	public static final double ZOOM_FACTOR = 1.3;
-	public static final double MIN_ZOOM = 1, MAX_ZOOM = 200;
+	private static final double ZOOM_SCALE_CHANGE = 0.3;
+	private static final double ZOOM_SCROLL_SCALE_CHANGE = 0.1;
+	private static final double MIN_SCALE = 0.1;
+	private static final double MAX_SCALE = 10000;
+	private static final double MOVE_CHANGE = 30;
 
 	// how far away from a node you can click before it isn't counted.
 	public static final double MAX_CLICKED_DISTANCE = 0.15;
 
 	// these two define the 'view' of the program, ie. where you're looking and
 	// how zoomed in you are.
-	private Location origin;
-	private double scale;
+	private Location origin = new Location(0, 0);
+	private double scale = 10;
+	private double cursorX = 0, cursorY = 0;
+	private double dragStartOriginX = 0, dragStartOriginY = 0;
 
 	// our data structures.
 	private Graph graph;
@@ -57,7 +56,9 @@ public class Mapper extends GUI {
 
 	@Override
 	protected void onClick(MouseEvent e) {
-		Location clicked = Location.newFromPoint(e.getPoint(), origin, scale);
+		Point clickPoint = e.getPoint();
+		clickPoint.translate(-getDrawingAreaDimension().width / 2, -getDrawingAreaDimension().height / 2);
+		Location clicked = Location.newFromPoint(clickPoint, origin, scale);
 		// find the closest node.
 		double bestDist = Double.MAX_VALUE;
 		Node closest = null;
@@ -83,29 +84,67 @@ public class Mapper extends GUI {
 	}
 
 	@Override
-	protected void onMove(Move m) {
-		if (m == GUI.Move.NORTH) {
-			origin = origin.moveBy(0, MOVE_AMOUNT / scale);
-		} else if (m == GUI.Move.SOUTH) {
-			origin = origin.moveBy(0, -MOVE_AMOUNT / scale);
-		} else if (m == GUI.Move.EAST) {
-			origin = origin.moveBy(MOVE_AMOUNT / scale, 0);
-		} else if (m == GUI.Move.WEST) {
-			origin = origin.moveBy(-MOVE_AMOUNT / scale, 0);
-		} else if (m == GUI.Move.ZOOM_IN) {
-			if (scale < MAX_ZOOM) {
-				// yes, this does allow you to go slightly over/under the
-				// max/min scale, but it means that we always zoom exactly to
-				// the centre.
-				scaleOrigin(true);
-				scale *= ZOOM_FACTOR;
-			}
-		} else if (m == GUI.Move.ZOOM_OUT) {
-			if (scale > MIN_ZOOM) {
-				scaleOrigin(false);
-				scale /= ZOOM_FACTOR;
-			}
+	protected void onMove(GUI.Move m) {
+		switch (m) {
+			case ZOOM_IN:
+				scale += ZOOM_SCALE_CHANGE * scale; // Scale multiplication normalizes zooming so the zooming speed remains constant.
+				if (scale > MAX_SCALE)
+					scale = MAX_SCALE;
+				break;
+			case ZOOM_OUT:
+				scale -= ZOOM_SCALE_CHANGE * scale;
+				if (scale < MIN_SCALE)
+					scale = MIN_SCALE;
+				break;
+
+			case NORTH:
+				origin = origin.moveBy(0, MOVE_CHANGE / scale);
+				break;
+			case SOUTH:
+				origin = origin.moveBy(0, -MOVE_CHANGE / scale);
+				break;
+			case EAST:
+				origin = origin.moveBy(MOVE_CHANGE / scale, 0);
+				break;
+			case WEST:
+				origin = origin.moveBy(-MOVE_CHANGE / scale, 0);
+				break;
 		}
+	}
+
+	@Override
+	protected void onMouseDragged(double draggedX, double draggedY) {
+		origin = new Location(
+				dragStartOriginX - (draggedX / scale),
+				dragStartOriginY + (draggedY / scale)
+		);
+	}
+
+	@Override
+	protected void onMouseMoved(double x, double y) {
+		cursorX = x;
+		cursorY = y;
+	}
+
+	@Override
+	protected void onMouseDragStart() {
+		dragStartOriginX = origin.x;
+		dragStartOriginY = origin.y;
+	}
+
+	@Override
+	protected void onMouseDragStop() {
+
+	}
+
+	@Override
+	protected void onMouseWheelMove(MouseWheelEvent e) {
+		scale -= e.getWheelRotation() * ZOOM_SCROLL_SCALE_CHANGE * scale;
+
+		if (scale > MAX_SCALE)
+			scale = MAX_SCALE;
+		if (scale < MIN_SCALE)
+			scale = MIN_SCALE;
 	}
 
 	@Override
@@ -113,23 +152,6 @@ public class Mapper extends GUI {
 		graph = new Graph(nodes, roads, segments, polygons);
 		origin = new Location(-250, 250); // close enough
 		scale = 1;
-	}
-
-	/**
-	 * This method does the nasty logic of making sure we always zoom into/out
-	 * of the centre of the screen. It assumes that scale has just been updated
-	 * to be either scale * ZOOM_FACTOR (zooming in) or scale / ZOOM_FACTOR
-	 * (zooming out). The passed boolean should correspond to this, ie. be true
-	 * if the scale was just increased.
-	 */
-	private void scaleOrigin(boolean zoomIn) {
-		Dimension area = getDrawingAreaDimension();
-		double zoom = zoomIn ? 1 / ZOOM_FACTOR : ZOOM_FACTOR;
-
-		int dx = (int) ((area.width - (area.width * zoom)) / 2);
-		int dy = (int) ((area.height - (area.height * zoom)) / 2);
-
-		origin = Location.newFromPoint(new Point(dx, dy), origin, scale);
 	}
 
 	public static void main(String[] args) {
