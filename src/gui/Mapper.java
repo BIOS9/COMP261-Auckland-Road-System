@@ -42,7 +42,6 @@ public class Mapper extends GUI {
 	// how zoomed in you are.
 	private Location origin = new Location(0, 0);
 	private double scale = 10;
-	private double cursorX = 0, cursorY = 0;
 	private double dragStartOriginX = 0, dragStartOriginY = 0;
 
 	// our data structures.
@@ -122,8 +121,7 @@ public class Mapper extends GUI {
 
 	@Override
 	protected void onMouseMoved(double x, double y) {
-		cursorX = x;
-		cursorY = y;
+
 	}
 
 	@Override
