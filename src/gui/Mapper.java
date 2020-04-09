@@ -58,6 +58,7 @@ public class Mapper extends GUI {
 		Point clickPoint = e.getPoint();
 		clickPoint.translate(-getDrawingAreaDimension().width / 2, -getDrawingAreaDimension().height / 2);
 		Location clicked = Location.newFromPoint(clickPoint, origin, scale);
+
 		// find the closest node.
 		double bestDist = Double.MAX_VALUE;
 		Node closest = null;
