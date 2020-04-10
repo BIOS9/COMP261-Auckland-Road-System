@@ -1,5 +1,61 @@
+A*
+Going from node D to node H.
+
+Step 0:
+Fringe Elements {<D, null, 0, 25>}
+	Element to visit next: <D, null, 0, 25>
+
+Step 1:
+Fringe Elements {
+<E, D, 10, 26>,	<- new
+<F, D, 8,  27>,	<- new
+<C, D, 14, 51>,	<- new
+<A, D, 15, 53>	<- new
+}
+	Element to visit next: <E, D, 10, 26>
+
+Step 2:
+Fringe Elements {
+<F, D, 8,  27>,
+<H, E, 31, 31>,	<- new
+<C, D, 14, 51>,
+<A, D, 15, 53>
+}
+	Element to visit next: <F, D, 8, 27>
+
+Step 3:
+Fringe Elements {
+<G, F, 18, 19>, <- new
+<H, E, 31, 31>,
+<I, F, 23, 39>,
+<C, D, 14, 51>,
+<A, D, 15, 53>
+}
+	Element to visit next: <G, F, 18, 19>
+
+Step 4:
+Fringe Elements {
+<H, G, 28, 28>, <- new
+<H, E, 31, 31>,
+<I, F, 23, 39>,
+<C, D, 14, 51>,
+<A, D, 15, 53>
+}
+	Element to visit next: <H, G, 28, 28>
+
+Step 5:
+	Goal node reached: <H, G, 28, 28>
+	Reverse path: H -> G -> F -> D
+	Path: D -> F -> G -> H
+
+
+
+
+
+
+
 Dijkstra’s:
-Going node D to node H.
+Going from node D to node H.
 
 Step 0: 
 Fringe Elements {<D, null, 0>}
@@ -13,6 +69,7 @@ Fringe Elements {
 <A, D, 15>	<- new
 }
 	Element to visit next: <F, D, 8>
+
 Step 2:
 Fringe Elements {
 <E, D, 10>,
@@ -22,6 +79,7 @@ Fringe Elements {
 <I, F, 23>	<- new
 }
 	Element to visit next: <E, D, 10>
+
 Step 3:
 Fringe Elements {
 <C, D, 14>, 
@@ -31,6 +89,7 @@ Fringe Elements {
 <H, E, 31>	<- new
 }
 	Element to visit next: <C, D, 14>
+
 Step 4:
 Fringe Elements {
 <A, D, 15>,
@@ -40,6 +99,7 @@ Fringe Elements {
 <H, E, 31>
 }
 	Element to visit next: <A, D, 15>
+
 Step 5:
 Fringe Elements {
 <G, F, 18>,
@@ -49,6 +109,7 @@ Fringe Elements {
 <H, E, 31>
 }
 	Element to visit next: <G, F, 18>
+
 Step 6:
 Fringe Elements {
 <B, A, 22>,
@@ -58,6 +119,7 @@ Fringe Elements {
 <H, E, 31>
 }
 	Element to visit next: <B, A, 22>
+
 Step 6:
 Fringe Elements {
 <B, C, 22>,
@@ -67,6 +129,7 @@ Fringe Elements {
 }
 	C already visited so not added.
 	Element to visit next: <B, C, 22>
+
 Step 7:
 Fringe Elements {
 <I, F, 23>,
@@ -75,6 +138,7 @@ Fringe Elements {
 }
 	B now already visited so skipped.
 	Element to visit next: <I, F, 23>
+
 Step 8:
 Fringe Elements {
 <H, G, 28>,
