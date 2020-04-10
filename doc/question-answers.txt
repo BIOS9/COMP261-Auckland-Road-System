@@ -1,0 +1,99 @@
+Dijkstra’s:
+Going node D to node H.
+
+Step 0: 
+Fringe Elements {<D, null, 0>}
+	Element to visit next <D, null, 0>
+
+Step 1: 
+Fringe Elements {
+<F, D, 8>,	<- new
+<E, D, 10>,	<- new
+<C, D, 14>, 	<- new
+<A, D, 15>	<- new
+}
+	Element to visit next: <F, D, 8>
+Step 2:
+Fringe Elements {
+<E, D, 10>,
+<C, D, 14>, 
+<A, D, 15>
+<G, F, 18>,	<- new
+<I, F, 23>	<- new
+}
+	Element to visit next: <E, D, 10>
+Step 3:
+Fringe Elements {
+<C, D, 14>, 
+<A, D, 15>
+<G, F, 18>,
+<I, F, 23>,
+<H, E, 31>	<- new
+}
+	Element to visit next: <C, D, 14>
+Step 4:
+Fringe Elements {
+<A, D, 15>,
+<G, F, 18>,
+<B, C, 22>,	<- new
+<I, F, 23>,
+<H, E, 31>
+}
+	Element to visit next: <A, D, 15>
+Step 5:
+Fringe Elements {
+<G, F, 18>,
+<B, A, 22>,	<- new
+<B, C, 22>,
+<I, F, 23>,
+<H, E, 31>
+}
+	Element to visit next: <G, F, 18>
+Step 6:
+Fringe Elements {
+<B, A, 22>,
+<B, C, 22>,
+<I, F, 23>,
+<H, G, 28>,	<- new
+<H, E, 31>
+}
+	Element to visit next: <B, A, 22>
+Step 6:
+Fringe Elements {
+<B, C, 22>,
+<I, F, 23>,
+<H, G, 28>,
+<H, E, 31>
+}
+	C already visited so not added.
+	Element to visit next: <B, C, 22>
+Step 7:
+Fringe Elements {
+<I, F, 23>,
+<H, G, 28>,
+<H, E, 31>
+}
+	B now already visited so skipped.
+	Element to visit next: <I, F, 23>
+Step 8:
+Fringe Elements {
+<H, G, 28>,
+<H, E, 31>,
+<G, I, 37>	<- new
+}
+	Element to visit next: <H, G, 28>
+
+Step 9:
+	Goal node reached: <H, G, 28>
+	Reverse Path: H -> G -> F -> D
+	Path: D -> F -> G -> H
+
+
+
+
+
+
+
+
+
+
