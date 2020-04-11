@@ -1,8 +1,11 @@
 package gui;
 
+import com.sun.istack.internal.Nullable;
 import common.Graph;
 import common.Location;
 import common.Node;
+import route.Route;
+import route.RouteFinder;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -44,8 +47,23 @@ public class Mapper extends GUI {
 	private double scale = 10;
 	private double dragStartOriginX = 0, dragStartOriginY = 0;
 
+	private Node lastClicked = null;
+
 	// our data structures.
 	private Graph graph;
+
+	/**
+	 * Highlights a route between nodes.
+	 * @param route Route to highlight.
+	 */
+	private void highlightRoute(@Nullable Route route) {
+		if(route == null) {
+			getTextOutputArea().setText("No route found between nodes.");
+			return;
+		}
+
+		graph.setHighlight(route.getRoads());
+	}
 
 	@Override
 	protected void redraw(Graphics g) {
@@ -73,8 +91,17 @@ public class Mapper extends GUI {
 
 		// if it's close enough, highlight it and show some information.
 		if (clicked.distance(closest.location) < MAX_CLICKED_DISTANCE) {
-			graph.setHighlight(closest);
 			getTextOutputArea().setText(closest.toString());
+			graph.setHighlight(closest);
+
+			if(lastClicked == null) {
+				lastClicked = closest;
+			} else {
+				Route route = RouteFinder.findRoute(graph, lastClicked, closest);
+				highlightRoute(route);
+
+				lastClicked = null;
+			}
 		}
 	}
 

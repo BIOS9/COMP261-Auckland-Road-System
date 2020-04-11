@@ -1,0 +1,23 @@
+A* pseudocode:
+
+let g = cost from start node to current node
+let h = heuristic cost from current node to end node
+let f = h + g
+
+Add new fringe element with node = start node, g = 0, f = g + h = h, previous = null
+
+use priority queue with priority given to smallest f value
+
+while fringe is not empty:
+    let currentElement = pop node with smallest f value off fringe.
+
+    if currentElement.node is end node, solution found, return currentElement to be reversed for the path
+
+    if currentElement.node is visited, continue/skip.
+    mark currentElement.node as visited
+
+    for each node connectedNode connected to currentNode
+        let newRealCost = currentNode.g + cost to connectedNode
+        add new fringe element with node = connectedNode, previous = currentNode, g = newRealCost, f = newRealCost + connectedNode.h
+    end for
+end while
