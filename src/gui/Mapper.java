@@ -149,8 +149,8 @@ public class Mapper extends GUI {
 	@Override
 	protected void onLoad(File nodes, File roads, File segments, File polygons) {
 		graph = new Graph(nodes, roads, segments, polygons);
-		origin = new Location(-250, 250); // close enough
-		scale = 1;
+		origin = new Location(0, 0); // close enough
+		scale = 10;
 	}
 
 	public static void main(String[] args) {
