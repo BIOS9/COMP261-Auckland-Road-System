@@ -155,7 +155,8 @@ Step 9:
 
 
 
-
+The reason that A* takes fewer steps than 1-1 Dijkstra's is because A* has some sense of getting closer to the goal, or the direction that it is going in.
+This means that it tends not to visit nodes that are not in the right direction unless all other options have been exhausted. Dijkstra's algorithm is more of a brute force approach.
 
 
 
