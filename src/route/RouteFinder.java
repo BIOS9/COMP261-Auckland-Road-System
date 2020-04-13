@@ -20,7 +20,7 @@ public class RouteFinder {
         PriorityQueue<FringeElement> fringe = new PriorityQueue<>();
         Set<Node> visited = new HashSet<>();
 
-        fringe.offer(new FringeElement(start, null, 0, getHeuristicCost(start, end)));
+        fringe.offer(new FringeElement(start, null, null, 0, getHeuristicCost(start, end)));
 
         while (!fringe.isEmpty()) {
             FringeElement currentElement = fringe.poll();
@@ -38,6 +38,7 @@ public class RouteFinder {
                 fringe.offer(new FringeElement(
                         connectedNode, // Node
                         currentElement, // Previous element.
+                        segment, // Connecting segment.
                         segment.length + currentElement.realCost, // Real cost.
                         getHeuristicCost(connectedNode, end) // Heuristic cost.
                 ));
@@ -59,6 +60,8 @@ public class RouteFinder {
         FringeElement currentElement = element;
         while (true) {
             nodes.add(currentElement.node);
+            if(currentElement.connectingSegment != null)
+                segments.add(currentElement.connectingSegment);
 
             if(currentElement.previousElement != null)
                 currentElement = currentElement.previousElement;

@@ -1,6 +1,7 @@
 package common;
 
 import java.awt.*;
+import java.util.Objects;
 
 /**
  * A common.Segment is the most interesting class making up our graph, and represents
@@ -57,6 +58,22 @@ public class Segment {
 		if(start.equals(node))
 			return end;
 		return start;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Segment segment = (Segment) o;
+		return Double.compare(segment.length, length) == 0 &&
+				Objects.equals(road, segment.road) &&
+				Objects.equals(start, segment.start) &&
+				Objects.equals(end, segment.end);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(road, start, end, length);
 	}
 }
 

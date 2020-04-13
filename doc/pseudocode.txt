@@ -4,7 +4,12 @@ let g = cost from start node to current node
 let h = heuristic cost from current node to end node
 let f = h + g
 
-Add new fringe element with node = start node, g = 0, f = g + h = h, previous = null
+Add new fringe element with
+    node = start node,
+    g = 0,
+    f = g + h = h,
+    previous = null,
+    segment = null
 
 use priority queue with priority given to smallest f value
 
@@ -16,8 +21,13 @@ while fringe is not empty:
     if currentElement.node is visited, continue/skip.
     mark currentElement.node as visited
 
-    for each node connectedNode connected to currentNode
+    for each node connectedNode connected to currentNode via segment s
         let newRealCost = currentNode.g + cost to connectedNode
-        add new fringe element with node = connectedNode, previous = currentNode, g = newRealCost, f = newRealCost + connectedNode.h
+        add new fringe element with
+            node = connectedNode,
+            previous = currentElement,
+            g = newRealCost,
+            f = newRealCost + connectedNode.h,
+            segment = s
     end for
 end while

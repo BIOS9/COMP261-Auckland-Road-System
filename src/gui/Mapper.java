@@ -63,6 +63,7 @@ public class Mapper extends GUI {
 		}
 
 		graph.setHighlightNodes(route.getNodes());
+		graph.setHighlightedSegments(route.getSegments());
 	}
 
 	@Override
