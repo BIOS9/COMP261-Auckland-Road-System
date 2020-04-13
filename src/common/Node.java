@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -56,6 +57,19 @@ public class Node {
 			str += e + ", ";
 		}
 		return str.substring(0, str.length() - 2);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Node node = (Node) o;
+		return nodeID == node.nodeID;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(nodeID);
 	}
 }
 

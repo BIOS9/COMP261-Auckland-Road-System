@@ -47,6 +47,17 @@ public class Segment {
 			g.drawLine(p.x, p.y, q.x, q.y);
 		}
 	}
+
+	/**
+	 * Gets the node that is not the specified node.
+	 * @param node Node to not return.
+	 * @return Node at the other end of the segment.
+	 */
+	public Node getOtherNode(Node node) {
+		if(start.equals(node))
+			return end;
+		return start;
+	}
 }
 
 // code for COMP261 assignments

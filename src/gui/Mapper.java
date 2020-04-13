@@ -62,7 +62,7 @@ public class Mapper extends GUI {
 			return;
 		}
 
-		graph.setHighlight(route.getRoads());
+		graph.setHighlightNodes(route.getNodes());
 	}
 
 	@Override
