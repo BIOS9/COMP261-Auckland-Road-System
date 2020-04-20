@@ -45,7 +45,7 @@ public class RouteFinder {
                     connectedNode = segment.getOtherNode(currentElement.node);
                 }
 
-                double realCost = useTime ? (segment.length * segment.road.speed) : segment.length; // Use time = distance * speed if time is set
+                double realCost = useTime ? (segment.length / (segment.road.speed * segment.road.roadClass)) : segment.length; // Use time = distance / speed if time is set
 
                 fringe.offer(new FringeElement(
                         connectedNode, // Node
@@ -96,7 +96,7 @@ public class RouteFinder {
      */
     private static double getHeuristicCost(Node current, Node end, boolean useTime) {
         if(useTime)
-            return current.location.distance(end.location) / Parser.maxSpeed; // use max speed so we can assume the minimum cost
+            return current.location.distance(end.location) / (Parser.maxSpeed * Parser.maxClass); // use max speed and max class so we can assume the minimum cost
 
         return current.location.distance(end.location);
     }

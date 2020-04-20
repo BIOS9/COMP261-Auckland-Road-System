@@ -20,7 +20,7 @@ import java.util.stream.*;
  */
 public class Parser {
 
-	public static int maxSpeed = 0;
+	public static int maxSpeed = 0, maxClass = 0;
 
     private Parser(){
         //empty private constructor
@@ -77,6 +77,9 @@ public class Parser {
 
                         if(speed > maxSpeed) // Find max speed of all roads in this file
                         	maxSpeed = speed;
+
+						if(road_class > maxClass) // Find max class of all roads in this file
+							maxClass = road_class;
 
                         return new Road(
                                 roadID, type, label,

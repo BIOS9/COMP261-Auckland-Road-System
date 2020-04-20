@@ -12,7 +12,7 @@ import java.util.Objects;
  * @author tony
  */
 public class Road {
-	public final int roadID, speed;
+	public final int roadID, speed, roadClass;
 	public final String name, city;
 	public final boolean oneWay;
 	public final Collection<Segment> components;
@@ -23,6 +23,7 @@ public class Road {
 		this.roadID = roadID;
 		this.city = city;
 		this.speed = speed;
+		this.roadClass = roadclass;
 		this.name = label;
 		this.oneWay = (oneway == 1);
 		this.components = new HashSet<Segment>();
