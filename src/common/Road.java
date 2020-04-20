@@ -14,7 +14,7 @@ import java.util.Objects;
 public class Road {
 	public final int roadID, speed, roadClass;
 	public final String name, city;
-	public final boolean oneWay;
+	public final boolean oneWay, noCars, noBikes, noPedestrians;
 	public final Collection<Segment> components;
 
 	public Road(int roadID, int type, String label, String city, int oneway,
@@ -26,6 +26,9 @@ public class Road {
 		this.roadClass = roadclass;
 		this.name = label;
 		this.oneWay = (oneway == 1);
+		this.noCars = (notforcar == 1);
+		this.noBikes = (notforbicy == 1);
+		this.noPedestrians = (notforpede == 1);
 		this.components = new HashSet<Segment>();
 	}
 

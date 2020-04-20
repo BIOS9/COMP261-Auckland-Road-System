@@ -99,6 +99,14 @@ public abstract class GUI {
 
 	protected abstract void onTimeSelected();
 
+	public enum Vehicle {
+		DRIVING,
+		BIKING,
+		WALKING
+	}
+
+	protected abstract void onVehicleSelectionChanged(Vehicle vehicle);
+
 	/**
 	 * Is called when the user has successfully selected a directory to load the
 	 * data files from. File objects representing the four files of interested
@@ -326,6 +334,30 @@ public abstract class GUI {
 
 
 
+		JRadioButton carButton = new JRadioButton("Driving");
+		carButton.setSelected(true);
+		carButton.addActionListener((e) -> {
+			onVehicleSelectionChanged(Vehicle.DRIVING);
+			redraw();
+		});
+
+		JRadioButton bikingButton = new JRadioButton("Biking");
+		bikingButton.addActionListener((e) -> {
+			onVehicleSelectionChanged(Vehicle.BIKING);
+			redraw();
+		});
+
+		JRadioButton walkingButton = new JRadioButton("Walking");
+		walkingButton.addActionListener((e) -> {
+			onVehicleSelectionChanged(Vehicle.WALKING);
+			redraw();
+		});
+
+		ButtonGroup vehicleSelectionGroup = new ButtonGroup();
+		vehicleSelectionGroup.add(carButton);
+		vehicleSelectionGroup.add(bikingButton);
+		vehicleSelectionGroup.add(walkingButton);
+
 		// next, make the search box at the top-right. we manually fix
 		// it's size, and add an action listener to call your code when
 		// the user presses enter.
@@ -395,6 +427,9 @@ public abstract class GUI {
 		controls.add(navigation);
 		controls.add(distanceButton);
 		controls.add(timeButton);
+		controls.add(carButton);
+		controls.add(bikingButton);
+		controls.add(walkingButton);
 		controls.add(Box.createRigidArea(new Dimension(15, 0)));
 		// glue is another invisible component that grows to take up all the
 		// space it can on resize.

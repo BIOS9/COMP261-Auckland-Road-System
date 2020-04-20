@@ -49,6 +49,7 @@ public class Mapper extends GUI {
 	private Node endNode = null;
 
 	boolean useTime = false;
+	Vehicle currentVehicle = Vehicle.DRIVING;
 
 	// our data structures.
 	private Graph graph;
@@ -104,13 +105,19 @@ public class Mapper extends GUI {
 	@Override
 	protected void onDistanceSelected() {
 		useTime = false;
-		findRoute(useTime);
+		findRoute(useTime, currentVehicle);
 	}
 
 	@Override
 	protected void onTimeSelected() {
 		useTime = true;
-		findRoute(useTime);
+		findRoute(useTime, currentVehicle);
+	}
+
+	@Override
+	protected void onVehicleSelectionChanged(Vehicle vehicle) {
+		currentVehicle = vehicle;
+		findRoute(useTime, currentVehicle);
 	}
 
 	@Override
@@ -155,15 +162,15 @@ public class Mapper extends GUI {
 				startNode = closest;
 			} else if(startNode != null && endNode == null) {
 				endNode = closest;
-				findRoute(useTime);
+				findRoute(useTime, currentVehicle);
 			}
 		}
 	}
 
-	private void findRoute(boolean useTime) {
+	private void findRoute(boolean useTime, Vehicle vehicle) {
 		if(graph == null)
 			return;
-		Route route = RouteFinder.findRoute(graph, startNode, endNode, useTime);
+		Route route = RouteFinder.findRoute(graph, startNode, endNode, useTime, vehicle);
 		highlightRoute(route);
 	}
 

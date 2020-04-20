@@ -3,6 +3,7 @@ package route;
 import common.Graph;
 import common.Node;
 import common.Segment;
+import gui.GUI;
 import io.Parser;
 
 import java.lang.reflect.Array;
@@ -16,7 +17,7 @@ import java.util.*;
  */
 public class RouteFinder {
 
-    public static Route findRoute(Graph graph, Node start, Node end, boolean useTime) {
+    public static Route findRoute(Graph graph, Node start, Node end, boolean useTime, GUI.Vehicle vehicle) {
         System.out.printf("Finding route between %s and %s.%n", start, end);
 
         PriorityQueue<FringeElement> fringe = new PriorityQueue<>();
@@ -43,6 +44,22 @@ public class RouteFinder {
                         continue; // Road is one way, cannot go from end node to start node.
                 } else { // Road is bi-directional, can just get the other node.
                     connectedNode = segment.getOtherNode(currentElement.node);
+                }
+
+                // Take vehicle restrictions into account.
+                switch (vehicle) {
+                    case DRIVING:
+                        if(segment.road.noCars)
+                            continue;
+                        break;
+                    case BIKING:
+                        if(segment.road.noBikes)
+                            continue;
+                        break;
+                    case WALKING:
+                        if(segment.road.noPedestrians)
+                            continue;
+                        break;
                 }
 
                 double realCost = useTime ? (segment.length / (segment.road.speed * segment.road.roadClass)) : segment.length; // Use time = distance / speed if time is set
