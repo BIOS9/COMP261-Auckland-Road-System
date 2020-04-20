@@ -99,6 +99,8 @@ public abstract class GUI {
 
 	protected abstract void onTimeSelected();
 
+	protected abstract void onTrafficLightChanged(boolean avoidLights);
+
 	public enum Vehicle {
 		DRIVING,
 		BIKING,
@@ -123,7 +125,7 @@ public abstract class GUI {
 	 *            a File for polygon-shapes.mp
 	 */
 	protected abstract void onLoad(File nodes, File roads, File segments,
-			File polygons);
+			File polygons, File trafficLights);
 
 	// here are some useful methods you'll need.
 
@@ -175,6 +177,7 @@ public abstract class GUI {
 	private static final String ROADS_FILENAME = "roadID-roadInfo.tab";
 	private static final String SEGS_FILENAME = "roadSeg-roadID-length-nodeID-nodeID-coords.tab";
 	private static final String POLYS_FILENAME = "polygon-shapes.mp";
+	private static final String TRAFFIC_LIGHTS_FILENAME = "traffic-lights.tab";
 
 	/*
 	 * In Swing, everything is a component; buttons, graphics panes, tool tips,
@@ -227,7 +230,7 @@ public abstract class GUI {
 		JButton load = new JButton("Load");
 		load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
-				File nodes = null, roads = null, segments = null, polygons = null;
+				File nodes = null, roads = null, segments = null, polygons = null, trafficLights = null;
 
 				// set up the file chooser
 				fileChooser.setCurrentDirectory(new File("."));
@@ -250,6 +253,8 @@ public abstract class GUI {
 							segments = f;
 						} else if (f.getName().equals(POLYS_FILENAME)) {
 							polygons = f;
+						} else if (f.getName().equals(TRAFFIC_LIGHTS_FILENAME)) {
+							trafficLights = f;
 						}
 					}
 
@@ -260,7 +265,7 @@ public abstract class GUI {
 								"Directory does not contain correct files",
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
-						onLoad(nodes, roads, segments, polygons);
+						onLoad(nodes, roads, segments, polygons, trafficLights);
 						redraw();
 					}
 				}
@@ -358,6 +363,12 @@ public abstract class GUI {
 		vehicleSelectionGroup.add(bikingButton);
 		vehicleSelectionGroup.add(walkingButton);
 
+		JCheckBox trafficLightButton = new JCheckBox("Avoid traffic lights");
+		trafficLightButton.addActionListener((e) -> {
+			onTrafficLightChanged(trafficLightButton.isSelected());
+			redraw();
+		});
+
 		// next, make the search box at the top-right. we manually fix
 		// it's size, and add an action listener to call your code when
 		// the user presses enter.
@@ -430,6 +441,7 @@ public abstract class GUI {
 		controls.add(carButton);
 		controls.add(bikingButton);
 		controls.add(walkingButton);
+		controls.add(trafficLightButton);
 		controls.add(Box.createRigidArea(new Dimension(15, 0)));
 		// glue is another invisible component that grows to take up all the
 		// space it can on resize.

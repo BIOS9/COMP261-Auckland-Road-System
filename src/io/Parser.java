@@ -100,6 +100,20 @@ public class Parser {
 		}
 	}
 
+	public static Map<String, Integer> parseTrafficLights(File file) {
+		try {
+			return Files.lines(file.toPath())
+					.parallel()
+					.map(splitByTab)
+					.collect(Collectors.toMap(
+							(String[] arr) -> arr[0],
+							(String[] arr) -> Integer.parseInt(arr[1])
+					));
+		} catch (IOException ex) {
+			throw new RuntimeException("Failed to parse traffic light data: " + ex.getMessage());
+		}
+	}
+
 	public static Collection<Segment> parseSegments(
 			File segments,
 			Graph graph)

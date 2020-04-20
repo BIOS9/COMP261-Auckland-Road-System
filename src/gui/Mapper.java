@@ -115,6 +115,12 @@ public class Mapper extends GUI {
 	}
 
 	@Override
+	protected void onTrafficLightChanged(boolean avoidLights) {
+		RouteFinder.TRAFFIC_LIGHT_COST = avoidLights ? 999 : 0;
+		findRoute(useTime, currentVehicle);
+	}
+
+	@Override
 	protected void onVehicleSelectionChanged(Vehicle vehicle) {
 		currentVehicle = vehicle;
 		findRoute(useTime, currentVehicle);
@@ -243,8 +249,8 @@ public class Mapper extends GUI {
 	}
 
 	@Override
-	protected void onLoad(File nodes, File roads, File segments, File polygons) {
-		graph = new Graph(nodes, roads, segments, polygons);
+	protected void onLoad(File nodes, File roads, File segments, File polygons, File trafficLights) {
+		graph = new Graph(nodes, roads, segments, polygons, trafficLights);
 		origin = new Location(0, 0); // close enough
 		scale = 10;
 	}

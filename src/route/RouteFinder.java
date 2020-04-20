@@ -6,8 +6,6 @@ import common.Segment;
 import gui.GUI;
 import io.Parser;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Parameter;
 import java.util.*;
 
 /**
@@ -16,6 +14,8 @@ import java.util.*;
  * @author Matthew Corfiatis
  */
 public class RouteFinder {
+
+    public static double TRAFFIC_LIGHT_COST = 0;
 
     public static Route findRoute(Graph graph, Node start, Node end, boolean useTime, GUI.Vehicle vehicle) {
         System.out.printf("Finding route between %s and %s.%n", start, end);
@@ -63,6 +63,7 @@ public class RouteFinder {
                 }
 
                 double realCost = useTime ? (segment.length / (segment.road.speed * segment.road.roadClass)) : segment.length; // Use time = distance / speed if time is set
+                realCost += (segment.road.trafficLightValue * TRAFFIC_LIGHT_COST);
 
                 fringe.offer(new FringeElement(
                         connectedNode, // Node

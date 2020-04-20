@@ -2,17 +2,13 @@ package common;
 
 import gui.Mapper;
 import io.Parser;
-import sun.util.resources.cldr.zh.CalendarData_zh_Hans_HK;
 
 import java.awt.BasicStroke;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.io.File;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This represents the data structure storing all the roads, nodes, and
@@ -33,10 +29,37 @@ public class Graph {
     Collection<Road> highlightedRoads = new HashSet<>();
     Collection<Segment> highlightedSegments = new HashSet<>();
 
-    public Graph(File nodes, File roads, File segments, File polygons) {
+    public Graph(File nodes, File roads, File segments, File polygons, File trafficLights) {
         this.nodes = Parser.parseNodes(nodes, this);
         this.roads = Parser.parseRoads(roads, this);
         this.segments = Parser.parseSegments(segments, this);
+
+        if(trafficLights != null)
+            applyTrafficLightCounts(Parser.parseTrafficLights(trafficLights));
+    }
+
+    private void applyTrafficLightCounts(Map<String, Integer> counts) {
+        HashMap<String, List<Road>> roadMap = new HashMap<>();
+
+        for(Road r : roads.values()) {
+            if(roadMap.containsKey(r.name)) {
+                roadMap.get(r.name).add(r);
+            } else {
+                ArrayList<Road> roadList = new ArrayList<>();
+                roadList.add(r);
+                roadMap.put(r.name, roadList);
+            }
+        }
+
+        // Evenly divide the lights over all the roads sections with the same name.
+        for(Map.Entry<String, Integer> entry : counts.entrySet()) {
+            List<Road> roadList = roadMap.get(entry.getKey());
+            double lightCost = (double)entry.getValue() / (double)roadList.size();
+
+            for(Road r : roadList) {
+                r.trafficLightValue = lightCost;
+            }
+        }
     }
 
     public void draw(Graphics g, Dimension screen, Location origin, double scale) {
