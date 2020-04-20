@@ -13,20 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.io.File;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.text.DefaultCaret;
 
@@ -107,6 +94,10 @@ public abstract class GUI {
 	 * Is called whenever the mouse stops dragging.
 	 */
 	protected abstract void onMouseDragStop();
+
+	protected abstract void onDistanceSelected();
+
+	protected abstract void onTimeSelected();
 
 	/**
 	 * Is called when the user has successfully selected a directory to load the
@@ -316,6 +307,25 @@ public abstract class GUI {
 			}
 		});
 
+		JRadioButton distanceButton = new JRadioButton("Distance");
+		distanceButton.setSelected(true);
+		distanceButton.addActionListener((e) -> {
+			onDistanceSelected();
+			redraw();
+		});
+
+		JRadioButton timeButton = new JRadioButton("Time");
+		timeButton.addActionListener((e) -> {
+			onTimeSelected();
+			redraw();
+		});
+
+		ButtonGroup costSelectionGroup = new ButtonGroup();
+		costSelectionGroup.add(timeButton);
+		costSelectionGroup.add(distanceButton);
+
+
+
 		// next, make the search box at the top-right. we manually fix
 		// it's size, and add an action listener to call your code when
 		// the user presses enter.
@@ -383,6 +393,8 @@ public abstract class GUI {
 		navigation.add(south);
 		navigation.add(east);
 		controls.add(navigation);
+		controls.add(distanceButton);
+		controls.add(timeButton);
 		controls.add(Box.createRigidArea(new Dimension(15, 0)));
 		// glue is another invisible component that grows to take up all the
 		// space it can on resize.

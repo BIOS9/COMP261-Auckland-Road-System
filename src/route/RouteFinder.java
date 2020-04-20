@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class RouteFinder {
 
-    public static Route findRoute(Graph graph, Node start, Node end) {
+    public static Route findRoute(Graph graph, Node start, Node end, boolean useTime) {
         System.out.printf("Finding route between %s and %s.%n", start, end);
 
         PriorityQueue<FringeElement> fringe = new PriorityQueue<>();
@@ -33,13 +33,23 @@ public class RouteFinder {
             visited.add(currentElement.node);
 
             for (Segment segment : currentElement.node.segments) {
-                Node connectedNode = segment.getOtherNode(currentElement.node);
+                Node connectedNode;
+                if(segment.road.oneWay) {
+                    if(segment.start.equals(currentElement.node)) // Road is one way, can go from start to end.
+                        connectedNode = segment.end;
+                    else
+                        continue; // Road is one way, cannot go from end node to start node.
+                } else { // Road is bi-directional, can just get the other node.
+                    connectedNode = segment.getOtherNode(currentElement.node);
+                }
+
+                double realCost = useTime ? (segment.length * segment.road.speed) : segment.length; // Use time = distance * speed if time is set
 
                 fringe.offer(new FringeElement(
                         connectedNode, // Node
                         currentElement, // Previous element.
                         segment, // Connecting segment.
-                        segment.length + currentElement.realCost, // Real cost.
+                        realCost + currentElement.realCost, // Real cost.
                         getHeuristicCost(connectedNode, end) // Heuristic cost.
                 ));
             }

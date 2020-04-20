@@ -45,7 +45,10 @@ public class Mapper extends GUI {
 	private double scale = 10;
 	private double dragStartOriginX = 0, dragStartOriginY = 0;
 
-	private Node lastClicked = null;
+	private Node startNode = null;
+	private Node endNode = null;
+
+	boolean useTime = false;
 
 	// our data structures.
 	private Graph graph;
@@ -73,6 +76,8 @@ public class Mapper extends GUI {
 	private void printRoute(Route route) {
 		StringBuilder builder = new StringBuilder();
 
+		builder.append("Route:\n");
+
 		String lastRoad = null;
 		double lastLength = 0;
 
@@ -97,6 +102,18 @@ public class Mapper extends GUI {
 	}
 
 	@Override
+	protected void onDistanceSelected() {
+		useTime = false;
+		findRoute(useTime);
+	}
+
+	@Override
+	protected void onTimeSelected() {
+		useTime = true;
+		findRoute(useTime);
+	}
+
+	@Override
 	protected void redraw(Graphics g) {
 		if (graph != null)
 			graph.draw(g, getDrawingAreaDimension(), origin, scale);
@@ -104,6 +121,14 @@ public class Mapper extends GUI {
 
 	@Override
 	protected void onClick(MouseEvent e) {
+
+		if(startNode != null && endNode != null) {
+			startNode = null;
+			endNode = null;
+			clearRoute();
+			getTextOutputArea().setText("");
+		}
+
 		Point clickPoint = e.getPoint();
 		clickPoint.translate(-getDrawingAreaDimension().width / 2, -getDrawingAreaDimension().height / 2);
 		Location clicked = Location.newFromPoint(clickPoint, origin, scale);
@@ -126,15 +151,20 @@ public class Mapper extends GUI {
 			clearRoute();
 			graph.setHighlight(closest);
 
-			if(lastClicked == null) {
-				lastClicked = closest;
-			} else {
-				Route route = RouteFinder.findRoute(graph, lastClicked, closest);
-				highlightRoute(route);
-
-				lastClicked = null;
+			if(startNode == null && endNode == null) {
+				startNode = closest;
+			} else if(startNode != null && endNode == null) {
+				endNode = closest;
+				findRoute(useTime);
 			}
 		}
+	}
+
+	private void findRoute(boolean useTime) {
+		if(graph == null)
+			return;
+		Route route = RouteFinder.findRoute(graph, startNode, endNode, useTime);
+		highlightRoute(route);
 	}
 
 	@Override

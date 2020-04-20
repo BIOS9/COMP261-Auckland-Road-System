@@ -12,8 +12,9 @@ import java.util.Objects;
  * @author tony
  */
 public class Road {
-	public final int roadID;
+	public final int roadID, speed;
 	public final String name, city;
+	public final boolean oneWay;
 	public final Collection<Segment> components;
 
 	public Road(int roadID, int type, String label, String city, int oneway,
@@ -21,7 +22,9 @@ public class Road {
 			int notforbicy) {
 		this.roadID = roadID;
 		this.city = city;
+		this.speed = speed;
 		this.name = label;
+		this.oneWay = (oneway == 1);
 		this.components = new HashSet<Segment>();
 	}
 
