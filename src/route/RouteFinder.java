@@ -3,8 +3,10 @@ package route;
 import common.Graph;
 import common.Node;
 import common.Segment;
+import io.Parser;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Parameter;
 import java.util.*;
 
 /**
@@ -20,7 +22,7 @@ public class RouteFinder {
         PriorityQueue<FringeElement> fringe = new PriorityQueue<>();
         Set<Node> visited = new HashSet<>();
 
-        fringe.offer(new FringeElement(start, null, null, 0, getHeuristicCost(start, end)));
+        fringe.offer(new FringeElement(start, null, null, 0, getHeuristicCost(start, end, useTime)));
 
         while (!fringe.isEmpty()) {
             FringeElement currentElement = fringe.poll();
@@ -50,7 +52,7 @@ public class RouteFinder {
                         currentElement, // Previous element.
                         segment, // Connecting segment.
                         realCost + currentElement.realCost, // Real cost.
-                        getHeuristicCost(connectedNode, end) // Heuristic cost.
+                        getHeuristicCost(connectedNode, end, useTime) // Heuristic cost.
                 ));
             }
         }
@@ -92,7 +94,10 @@ public class RouteFinder {
      * @param end Goal node.
      * @return Estimated cost value.
      */
-    private static double getHeuristicCost(Node current, Node end) {
+    private static double getHeuristicCost(Node current, Node end, boolean useTime) {
+        if(useTime)
+            return current.location.distance(end.location) / Parser.maxSpeed; // use max speed so we can assume the minimum cost
+
         return current.location.distance(end.location);
     }
 }

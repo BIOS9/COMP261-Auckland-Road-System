@@ -20,6 +20,8 @@ import java.util.stream.*;
  */
 public class Parser {
 
+	public static int maxSpeed = 0;
+
     private Parser(){
         //empty private constructor
     }
@@ -57,6 +59,7 @@ public class Parser {
 			Graph graph)
 	{
 		try{
+			maxSpeed = 0;
 			final Function<Road, Integer> key = road -> road.roadID;
 			final Function<Road, Road> value = road -> road;
 			final Function<String[], Road> toRoad =
@@ -71,6 +74,9 @@ public class Parser {
                             not_for_car = asInt(tokens[7]),
                             not_for_pedestrian = asInt(tokens[8]),
                             not_for_bicycle = asInt(tokens[9]);
+
+                        if(speed > maxSpeed) // Find max speed of all roads in this file
+                        	maxSpeed = speed;
 
                         return new Road(
                                 roadID, type, label,
