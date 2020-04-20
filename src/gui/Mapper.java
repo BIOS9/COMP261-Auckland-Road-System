@@ -1,9 +1,7 @@
 package gui;
 
 import com.sun.istack.internal.Nullable;
-import common.Graph;
-import common.Location;
-import common.Node;
+import common.*;
 import route.Route;
 import route.RouteFinder;
 
@@ -62,8 +60,40 @@ public class Mapper extends GUI {
 			return;
 		}
 
+		printRoute(route);
 		graph.setHighlightNodes(route.getNodes());
 		graph.setHighlightedSegments(route.getSegments());
+	}
+
+	private void clearRoute() {
+		graph.setHighlightNodes(null);
+		graph.setHighlightedSegments(null);
+	}
+
+	private void printRoute(Route route) {
+		StringBuilder builder = new StringBuilder();
+
+		String lastRoad = null;
+		double lastLength = 0;
+
+		for(Segment s : route.getSegments()) {
+			if(lastRoad == null) {
+				lastRoad = s.road.name;
+				lastLength = s.length;
+				continue;
+			}
+
+			if(lastRoad.equals(s.road.name)) {
+				lastLength += s.length;
+				continue;
+			}
+
+			builder.append(String.format("%s %.2fkm\n", lastRoad, lastLength));
+			lastRoad = s.road.name;
+			lastLength = s.length;
+		}
+		builder.append(String.format("%s %.2fkm\n", lastRoad, lastLength));
+		getTextOutputArea().setText(builder.toString());
 	}
 
 	@Override
@@ -93,6 +123,7 @@ public class Mapper extends GUI {
 		// if it's close enough, highlight it and show some information.
 		if (clicked.distance(closest.location) < MAX_CLICKED_DISTANCE) {
 			getTextOutputArea().setText(closest.toString());
+			clearRoute();
 			graph.setHighlight(closest);
 
 			if(lastClicked == null) {

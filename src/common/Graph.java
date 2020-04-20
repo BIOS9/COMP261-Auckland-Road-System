@@ -80,17 +80,20 @@ public class Graph {
 
     public void setHighlight(Node node) {
         this.highlightedNodes.clear();
-        highlightedNodes.add(node);
+        if (node != null)
+            highlightedNodes.add(node);
     }
 
     public void setHighlightNodes(Collection<Node> nodes) {
         this.highlightedNodes.clear();
-        highlightedNodes.addAll(nodes);
+        if (nodes != null)
+            highlightedNodes.addAll(nodes);
     }
 
     public void setHighlightedSegments(Collection<Segment> segments) {
         this.highlightedSegments.clear();
-        highlightedSegments.addAll(segments);
+        if (segments != null)
+            highlightedSegments.addAll(segments);
     }
 
     public void setHighlight(Collection<Road> roads) {
