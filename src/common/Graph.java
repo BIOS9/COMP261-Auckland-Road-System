@@ -2,6 +2,7 @@ package common;
 
 import gui.Mapper;
 import io.Parser;
+import route.TurnRestriction;
 
 import java.awt.BasicStroke;
 import java.awt.Dimension;
@@ -24,18 +25,23 @@ public class Graph {
     Map<Integer, Road> roads;
     // just some collection of Segments.
     Collection<Segment> segments;
+    Map<Integer, List<TurnRestriction>> turnRestrictions;
 
     Collection<Node> highlightedNodes = new HashSet<>();
     Collection<Road> highlightedRoads = new HashSet<>();
     Collection<Segment> highlightedSegments = new HashSet<>();
 
-    public Graph(File nodes, File roads, File segments, File polygons, File trafficLights) {
+    public Graph(File nodes, File roads, File segments, File polygons, File trafficLights, File restrictions) {
         this.nodes = Parser.parseNodes(nodes, this);
         this.roads = Parser.parseRoads(roads, this);
         this.segments = Parser.parseSegments(segments, this);
 
+
         if(trafficLights != null)
             applyTrafficLightCounts(Parser.parseTrafficLights(trafficLights));
+
+        if(restrictions != null)
+            this.turnRestrictions = Parser.parseRestrictions(restrictions);
     }
 
     private void applyTrafficLightCounts(Map<String, Integer> counts) {
@@ -126,6 +132,8 @@ public class Graph {
     public Map<Integer, Node> getNodes() {
         return nodes;
     }
+
+    public Map<Integer, List<TurnRestriction>> getTurnRestrictions() { return turnRestrictions; }
 }
 
 // code for COMP261 assignments

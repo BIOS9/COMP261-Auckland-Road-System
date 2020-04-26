@@ -1,4 +1,4 @@
-A*
+﻿A*
 Going from node D to node H.
 
 Step 0:
@@ -38,6 +38,7 @@ Fringe Elements {
 <H, G, 28, 28>, <- new
 <H, E, 31, 31>,
 <I, F, 23, 39>,
+<I, G, 32, 48>, <- new
 <C, D, 14, 51>,
 <A, D, 15, 53>
 }
@@ -116,7 +117,8 @@ Fringe Elements {
 <B, C, 22>,
 <I, F, 23>,
 <H, G, 28>,	<- new
-<H, E, 31>
+<H, E, 31>,
+<I, G, 32>      <- new
 }
 	Element to visit next: <B, A, 22>
 
@@ -125,7 +127,8 @@ Fringe Elements {
 <B, C, 22>,
 <I, F, 23>,
 <H, G, 28>,
-<H, E, 31>
+<H, E, 31>,
+<I, G, 32>
 }
 	C already visited so not added.
 	Element to visit next: <B, C, 22>
@@ -134,7 +137,8 @@ Step 7:
 Fringe Elements {
 <I, F, 23>,
 <H, G, 28>,
-<H, E, 31>
+<H, E, 31>,
+<I, G, 32>
 }
 	B now already visited so skipped.
 	Element to visit next: <I, F, 23>
@@ -143,6 +147,7 @@ Step 8:
 Fringe Elements {
 <H, G, 28>,
 <H, E, 31>,
+<I, G, 32>,
 <G, I, 37>	<- new
 }
 	Element to visit next: <H, G, 28>

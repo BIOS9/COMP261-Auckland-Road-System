@@ -125,7 +125,7 @@ public abstract class GUI {
 	 *            a File for polygon-shapes.mp
 	 */
 	protected abstract void onLoad(File nodes, File roads, File segments,
-			File polygons, File trafficLights);
+			File polygons, File trafficLights, File turnRestrictions);
 
 	// here are some useful methods you'll need.
 
@@ -178,6 +178,7 @@ public abstract class GUI {
 	private static final String SEGS_FILENAME = "roadSeg-roadID-length-nodeID-nodeID-coords.tab";
 	private static final String POLYS_FILENAME = "polygon-shapes.mp";
 	private static final String TRAFFIC_LIGHTS_FILENAME = "traffic-lights.tab";
+	private static final String RESTRICTIONS_FILENAME = "restrictions.tab";
 
 	/*
 	 * In Swing, everything is a component; buttons, graphics panes, tool tips,
@@ -230,7 +231,7 @@ public abstract class GUI {
 		JButton load = new JButton("Load");
 		load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
-				File nodes = null, roads = null, segments = null, polygons = null, trafficLights = null;
+				File nodes = null, roads = null, segments = null, polygons = null, trafficLights = null, turnRestrictions = null;
 
 				// set up the file chooser
 				fileChooser.setCurrentDirectory(new File("."));
@@ -255,6 +256,8 @@ public abstract class GUI {
 							polygons = f;
 						} else if (f.getName().equals(TRAFFIC_LIGHTS_FILENAME)) {
 							trafficLights = f;
+						} else if (f.getName().equals(RESTRICTIONS_FILENAME)) {
+							turnRestrictions = f;
 						}
 					}
 
@@ -265,7 +268,7 @@ public abstract class GUI {
 								"Directory does not contain correct files",
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
-						onLoad(nodes, roads, segments, polygons, trafficLights);
+						onLoad(nodes, roads, segments, polygons, trafficLights, turnRestrictions);
 						redraw();
 					}
 				}

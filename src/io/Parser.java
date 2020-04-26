@@ -4,6 +4,7 @@ import common.Graph;
 import common.Node;
 import common.Road;
 import common.Segment;
+import route.TurnRestriction;
 
 import java.io.*;
 import java.nio.file.*;
@@ -111,6 +112,27 @@ public class Parser {
 					));
 		} catch (IOException ex) {
 			throw new RuntimeException("Failed to parse traffic light data: " + ex.getMessage());
+		}
+	}
+
+	public static Map<Integer, List<TurnRestriction>> parseRestrictions(File file) {
+		try {
+			return Files.lines(file.toPath())
+					.skip(1)
+					.parallel()
+					.map(splitByTab)
+					.collect(Collectors.toMap(
+							(String[] arr) -> Integer.parseInt(arr[2]),
+							(String[] arr) -> {
+								ArrayList<TurnRestriction> restrictions = new ArrayList<>();
+								restrictions.add(new TurnRestriction(arr[2], arr[0], arr[1], arr[4], arr[3]));
+								return restrictions;
+							}, (a, b) -> {
+								a.addAll(b);
+								return a;
+							}));
+		} catch (IOException ex) {
+			throw new RuntimeException("Failed to parse restriction data: " + ex.getMessage());
 		}
 	}
 

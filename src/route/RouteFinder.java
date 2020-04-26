@@ -2,6 +2,7 @@ package route;
 
 import common.Graph;
 import common.Node;
+import common.Road;
 import common.Segment;
 import gui.GUI;
 import io.Parser;
@@ -16,8 +17,9 @@ import java.util.*;
 public class RouteFinder {
 
     public static double TRAFFIC_LIGHT_COST = 0;
+    public static double CLASS_FACTOR = 5000;
 
-    public static Route findRoute(Graph graph, Node start, Node end, boolean useTime, GUI.Vehicle vehicle) {
+    public static Route findRoute(Graph graph, Node start, Node end, boolean useTime, GUI.Vehicle vehicle, Map<Integer, List<TurnRestriction>> restrictions) {
         System.out.printf("Finding route between %s and %s.%n", start, end);
 
         PriorityQueue<FringeElement> fringe = new PriorityQueue<>();
@@ -46,6 +48,22 @@ public class RouteFinder {
                     connectedNode = segment.getOtherNode(currentElement.node);
                 }
 
+                if(restrictions != null && restrictions.containsKey(currentElement.node.nodeID)) {
+                    List<TurnRestriction> r = restrictions.get(currentElement.node.nodeID);
+                    Node previousNode = currentElement.previousElement.node;
+                    Node nextNode = connectedNode;
+                    Road previousRoad = currentElement.previousElement.connectingSegment.road;
+                    Road nextRoad = segment.road;
+
+                    for(TurnRestriction tr : r) {
+                        if(previousNode.nodeID == tr.previousNodeID
+                                && previousRoad.roadID == tr.previousRoadID
+                                && nextNode.nodeID == tr.nextNodeID
+                                && nextRoad.roadID == tr.nextRoadID) // Is turn restricted
+                            continue;
+                    }
+                }
+
                 // Take vehicle restrictions into account.
                 switch (vehicle) {
                     case DRIVING:
@@ -62,8 +80,14 @@ public class RouteFinder {
                         break;
                 }
 
-                double realCost = useTime ? (segment.length / (segment.road.speed * segment.road.roadClass)) : segment.length; // Use time = distance / speed if time is set
+
+                double classCost = 1 / (((double)segment.road.roadClass + 1) / ((double)Parser.maxClass + 1));
+                double realCost = useTime ? (segment.length / segment.road.speed) : segment.length; // Use time = distance / speed if time is set
+                if(useTime)
+                    realCost += classCost * CLASS_FACTOR;
+
                 realCost += (segment.road.trafficLightValue * TRAFFIC_LIGHT_COST);
+
 
                 fringe.offer(new FringeElement(
                         connectedNode, // Node
@@ -114,7 +138,7 @@ public class RouteFinder {
      */
     private static double getHeuristicCost(Node current, Node end, boolean useTime) {
         if(useTime)
-            return current.location.distance(end.location) / (Parser.maxSpeed * Parser.maxClass); // use max speed and max class so we can assume the minimum cost
+            return (current.location.distance(end.location) / Parser.maxSpeed); // use max speed and max class so we can assume the minimum cost
 
         return current.location.distance(end.location);
     }

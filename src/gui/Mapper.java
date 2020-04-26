@@ -4,6 +4,7 @@ import com.sun.istack.internal.Nullable;
 import common.*;
 import route.Route;
 import route.RouteFinder;
+import route.TurnRestriction;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -11,6 +12,8 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This is the main class for the mapping program. It extends the GUI abstract
@@ -105,25 +108,25 @@ public class Mapper extends GUI {
 	@Override
 	protected void onDistanceSelected() {
 		useTime = false;
-		findRoute(useTime, currentVehicle);
+		findRoute(useTime, currentVehicle, graph.getTurnRestrictions());
 	}
 
 	@Override
 	protected void onTimeSelected() {
 		useTime = true;
-		findRoute(useTime, currentVehicle);
+		findRoute(useTime, currentVehicle, graph.getTurnRestrictions());
 	}
 
 	@Override
 	protected void onTrafficLightChanged(boolean avoidLights) {
 		RouteFinder.TRAFFIC_LIGHT_COST = avoidLights ? 999 : 0;
-		findRoute(useTime, currentVehicle);
+		findRoute(useTime, currentVehicle, graph.getTurnRestrictions());
 	}
 
 	@Override
 	protected void onVehicleSelectionChanged(Vehicle vehicle) {
 		currentVehicle = vehicle;
-		findRoute(useTime, currentVehicle);
+		findRoute(useTime, currentVehicle, graph.getTurnRestrictions());
 	}
 
 	@Override
@@ -168,15 +171,15 @@ public class Mapper extends GUI {
 				startNode = closest;
 			} else if(startNode != null && endNode == null) {
 				endNode = closest;
-				findRoute(useTime, currentVehicle);
+				findRoute(useTime, currentVehicle, graph.getTurnRestrictions());
 			}
 		}
 	}
 
-	private void findRoute(boolean useTime, Vehicle vehicle) {
+	private void findRoute(boolean useTime, Vehicle vehicle, Map<Integer, List<TurnRestriction>> turnRestrictions) {
 		if(graph == null)
 			return;
-		Route route = RouteFinder.findRoute(graph, startNode, endNode, useTime, vehicle);
+		Route route = RouteFinder.findRoute(graph, startNode, endNode, useTime, vehicle, turnRestrictions);
 		highlightRoute(route);
 	}
 
@@ -249,8 +252,8 @@ public class Mapper extends GUI {
 	}
 
 	@Override
-	protected void onLoad(File nodes, File roads, File segments, File polygons, File trafficLights) {
-		graph = new Graph(nodes, roads, segments, polygons, trafficLights);
+	protected void onLoad(File nodes, File roads, File segments, File polygons, File trafficLights, File turnRestrictions) {
+		graph = new Graph(nodes, roads, segments, polygons, trafficLights, turnRestrictions);
 		origin = new Location(0, 0); // close enough
 		scale = 10;
 	}
